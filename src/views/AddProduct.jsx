@@ -6,8 +6,12 @@ const AddProduct = ({ onAddProduct }) => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    if (product.name && product.price > 0 && product.quantity > 0) {
-      onAddProduct(product);
+    if (product.name && Number(product.price) > 0 && Number(product.quantity) > 0) {
+      onAddProduct({
+        ...product,
+        price: Number(product.price),
+        quantity: Number(product.quantity)
+      });
       setProduct({ name: '', price: '', quantity: 1 });
       alert('Product added to catalog!');
     }

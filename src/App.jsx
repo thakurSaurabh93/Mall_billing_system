@@ -9,6 +9,7 @@ import InvoiceView from './views/InvoiceView';
 import { StorageModule } from './modules/StorageModule';
 import { CartModule } from './modules/CartModule';
 import { InvoiceModule } from './modules/InvoiceModule';
+import { CustomerModule } from './modules/CustomerModule';
 
 function App() {
   const [currentView, setView] = useState('dashboard');
@@ -34,9 +35,11 @@ function App() {
     setCartItems([...CartModule.getCartItems()]);
   };
 
-  const handleConfirmOrder = ({ customerName, subtotal, gst, discount, total }) => {
+  const handleConfirmOrder = ({ customerName, customerNumber, subtotal, gst, discount, total }) => {
+    CustomerModule.saveCustomer(customerName, customerNumber);
     const invoice = InvoiceModule.generateInvoice(
       customerName,
+      customerNumber,
       cartItems,
       subtotal,
       gst,

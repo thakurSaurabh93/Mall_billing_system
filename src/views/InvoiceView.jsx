@@ -1,5 +1,6 @@
 import React from 'react';
 import { Download, Printer, CheckCircle } from 'lucide-react';
+import html2pdf from 'html2pdf.js';
 
 const InvoiceView = ({ invoiceData }) => {
   if (!invoiceData) {
@@ -10,10 +11,22 @@ const InvoiceView = ({ invoiceData }) => {
     );
   }
 
-  const { invoiceNumber, date, customerName, items, summary } = invoiceData;
+  const { invoiceNumber, date, customerName, customerNumber, items, summary } = invoiceData;
 
   const handlePrint = () => {
     window.print();
+  };
+
+  const handleDownload = () => {
+    const element = document.getElementById('printable-invoice');
+    const opt = {
+      margin:       0.5,
+      filename:     `Invoice_${invoiceNumber}.pdf`,
+      image:        { type: 'jpeg', quality: 0.98 },
+      html2canvas:  { scale: 2 },
+      jsPDF:        { unit: 'in', format: 'letter', orientation: 'portrait' }
+    };
+    html2pdf().set(opt).from(element).save();
   };
 
   return (
@@ -25,7 +38,7 @@ const InvoiceView = ({ invoiceData }) => {
             <Printer size={18} />
             Print
           </button>
-          <button className="btn btn-primary">
+          <button className="btn btn-primary" onClick={handleDownload}>
             <Download size={18} />
             Download PDF
           </button>
@@ -48,6 +61,7 @@ const InvoiceView = ({ invoiceData }) => {
         <div style={{ marginBottom: '2.5rem' }}>
           <h4 style={{ color: 'var(--text-muted)', textTransform: 'uppercase', fontSize: '0.75rem', fontWeight: 'bold', marginBottom: '0.5rem' }}>Bill To:</h4>
           <p style={{ fontSize: '1.125rem', fontWeight: '600' }}>{customerName}</p>
+          {customerNumber && <p style={{ color: 'var(--text-muted)', fontSize: '0.875rem' }}>Phone: {customerNumber}</p>}
         </div>
 
         <table style={{ marginBottom: '2rem' }}>
